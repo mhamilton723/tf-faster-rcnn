@@ -19,6 +19,8 @@ from layer_utils.proposal_layer import proposal_layer
 from layer_utils.proposal_top_layer import proposal_top_layer
 from layer_utils.anchor_target_layer import anchor_target_layer
 from layer_utils.proposal_target_layer import proposal_target_layer
+from layer_utils.generate_anchors_tf import generate_anchors_pre_tf
+from layer_utils.proposal_layer_tf import proposal_layer_tf
 
 from model.config import cfg
 
@@ -112,6 +114,12 @@ class Network(object):
 
     return rois, rpn_scores
 
+  def _proposal_layer_tf(self, rpn_cls_prob, rpn_bbox_pred, name):
+    print('Use TF proposal layer')
+    with tf.variable_scope(name) as scope:
+      return proposal_layer_tf(rpn_cls_prob, rpn_bbox_pred, self._im_info,
+                               self._mode, self._anchors, self._num_anchors)
+
   # Only use it if you have roi_pooling op written in tf.image
   def _roi_pool_layer(self, bootom, rois, name):
     with tf.variable_scope(name) as scope:
@@ -200,6 +208,17 @@ class Network(object):
       anchor_length.set_shape([])
       self._anchors = anchors
       self._anchor_length = anchor_length
+
+  def _anchor_component_tf(self):
+    print('Use TF anchors')
+    with tf.variable_scope('ANCHOR_' + self._tag) as scope:
+      # just to get the shape right
+      height = tf.to_int32(tf.ceil(self._im_info[0, 0] / np.float32(self._feat_stride[0])))
+      width = tf.to_int32(tf.ceil(self._im_info[0, 1] / np.float32(self._feat_stride[0])))
+
+      self._anchors, self._anchor_length = generate_anchors_pre_tf(
+        height, width, self._feat_stride[0], self._anchor_scales,
+        self._anchor_ratios)
 
   def build_network(self, sess, is_training=True):
     raise NotImplementedError
