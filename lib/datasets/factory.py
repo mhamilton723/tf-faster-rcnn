@@ -13,8 +13,15 @@ from __future__ import print_function
 __sets = {}
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
+from datasets.lwir_humans_animals import lwir_humans_animals
 
 import numpy as np
+
+for year in ['0','1','2','3']:
+    for split in ['train', 'test']:
+        name = 'lwir_humans_animals_{}_{}'.format(year, split)
+        __sets[name] = (lambda split=split, year=year:
+                lwir_humans_animals(split, year))
 
 # Set up voc_<year>_<split> 
 for year in ['2007', '2012']:

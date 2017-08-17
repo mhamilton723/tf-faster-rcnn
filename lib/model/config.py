@@ -269,6 +269,9 @@ __C.ANCHOR_SCALES = [8,16,32]
 # Anchor ratios for RPN
 __C.ANCHOR_RATIOS = [0.5,1,2]
 
+__C.CLASSES = ('__background__', # always index 0
+               'poacher', 'animal') 
+
 
 def get_output_dir(imdb, weights_filename):
   """Return the directory where experimental artifacts are placed.
