@@ -94,6 +94,7 @@ class Network(object):
 
   def _proposal_top_layer(self, rpn_cls_prob, rpn_bbox_pred, name):
     with tf.variable_scope(name) as scope:
+      print("PYFUNC 1")
       rois, rpn_scores = tf.py_func(proposal_top_layer,
                                     [rpn_cls_prob, rpn_bbox_pred, self._im_info,
                                      self._feat_stride, self._anchors, self._num_anchors],
@@ -105,6 +106,7 @@ class Network(object):
 
   def _proposal_layer(self, rpn_cls_prob, rpn_bbox_pred, name):
     with tf.variable_scope(name) as scope:
+      print("PYFUNC 2")
       rois, rpn_scores = tf.py_func(proposal_layer,
                                     [rpn_cls_prob, rpn_bbox_pred, self._im_info, self._mode,
                                      self._feat_stride, self._anchors, self._num_anchors],
@@ -151,6 +153,7 @@ class Network(object):
 
   def _anchor_target_layer(self, rpn_cls_score, name):
     with tf.variable_scope(name) as scope:
+      print("PYFUNC 3")
       rpn_labels, rpn_bbox_targets, rpn_bbox_inside_weights, rpn_bbox_outside_weights = tf.py_func(
         anchor_target_layer,
         [rpn_cls_score, self._gt_boxes, self._im_info, self._feat_stride, self._anchors, self._num_anchors],
@@ -173,6 +176,7 @@ class Network(object):
 
   def _proposal_target_layer(self, rois, roi_scores, name):
     with tf.variable_scope(name) as scope:
+      print("PYFUNC 4")
       rois, roi_scores, labels, bbox_targets, bbox_inside_weights, bbox_outside_weights = tf.py_func(
         proposal_target_layer,
         [rois, roi_scores, self._gt_boxes, self._num_classes],
@@ -200,6 +204,7 @@ class Network(object):
       # just to get the shape right
       height = tf.to_int32(tf.ceil(self._im_info[0, 0] / np.float32(self._feat_stride[0])))
       width = tf.to_int32(tf.ceil(self._im_info[0, 1] / np.float32(self._feat_stride[0])))
+      print("PYFUNC 5")
       anchors, anchor_length = tf.py_func(generate_anchors_pre,
                                           [height, width,
                                            self._feat_stride, self._anchor_scales, self._anchor_ratios],

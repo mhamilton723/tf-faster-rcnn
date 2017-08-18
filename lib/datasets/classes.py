@@ -1,3 +1,5 @@
+LWIR = ('__background__', '0', '1')
+
 PASCAL_VOC = ('__background__',
               'aeroplane', 'bicycle', 'bird', 'boat',
               'bottle', 'bus', 'car', 'cat', 'chair',
